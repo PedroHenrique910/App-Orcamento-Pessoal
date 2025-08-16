@@ -60,60 +60,31 @@ function cadastrarDespesa() {
     valor.value
   );
 
-  // 1) Verifica campos vazios ANTES de qualquer outra coisa
-  const camposVazios = [ano, mes, dia, tipo, descricao, valor].some(
-    (v) => v == null || String(v).trim() === ""
-  );
+  if (despesa.validarDados()) {
+    //bd.gravar(despesa);
 
-  if (camposVazios) {
-    $("#modalTitulo").text("Erro no cadastro");
-    $("#modalCorpo").text("Faltam campos para serem preenchidos!");
+    //dialog de sucesso
+    document.getElementById("modalTitulo").innerHTML =
+      "Registro inserido com sucesso";
+    document.getElementById("modal_titulo_div").className =
+      "modal-header text-success";
+    document.getElementById("modal_conteudo").innerHTML =
+      "Despesa foi cadastrada com sucesso";
+    document.getElementById("modal_btn").innerHTML = "Voltar";
+    document.getElementById("modal_btn").className = "btn btn-success";
 
-    $("#modalRegistraDespesa .modal-header")
-      .removeClass("text-success text-danger")
-      .addClass("text-danger");
-
-    $("#modalBotao")
-      .removeClass("btn-success btn-danger")
-      .addClass("btn-danger")
-      .text("Corrigir");
+    //dialog de erro
+    $("#modalRegistraDespesa").modal("show");
+  } else {
+    document.getElementById("modalTitulo").innerHTML =
+      "Erro na inclusão do registro";
+    document.getElementById("modal_titulo_div").className =
+      "modal-header text-danger";
+    document.getElementById("modal_conteudo").innerHTML =
+      "Preencha todos os itens corretamente";
+    document.getElementById("modal_btn").innerHTML = "Voltar e corrigir";
+    document.getElementById("modal_btn").className = "btn btn-danger";
 
     $("#modalRegistraDespesa").modal("show");
-    return; // impede seguir adiante
   }
-
-  // 2) Regras adicionais de validação do objeto
-  if (!despesa.validarDados()) {
-    $("#modalTitulo").text("Dados inválidos");
-    $("#modalCorpo").text("Verifique os campos informados.");
-
-    $("#modalRegistraDespesa .modal-header")
-      .removeClass("text-success text-danger")
-      .addClass("text-danger");
-
-    $("#modalBotao")
-      .removeClass("btn-success btn-danger")
-      .addClass("btn-danger")
-      .text("Corrigir");
-
-    $("#modalRegistraDespesa").modal("show");
-    return;
-  }
-
-  // 3) Sucesso: grava e exibe modal verde
-  bd.gravar(despesa);
-
-  $("#modalTitulo").text("Registro inserido com sucesso");
-  $("#modalCorpo").text("Despesa foi cadastrada com sucesso!");
-
-  $("#modalRegistraDespesa .modal-header")
-    .removeClass("text-success text-danger")
-    .addClass("text-success");
-
-  $("#modalBotao")
-    .removeClass("btn-success btn-danger")
-    .addClass("btn-success")
-    .text("Ok");
-
-  $("#modalRegistraDespesa").modal("show");
 }
