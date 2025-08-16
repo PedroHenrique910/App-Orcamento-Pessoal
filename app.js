@@ -62,10 +62,18 @@ function cadastrarDespesa() {
 
   if (despesa.validarDados()) {
     bd.gravar(despesa);
-    //dialog de sucesso
-    $('#sucessoGravacao').modal('show')
-  } else {
+
     //dialog de erro
-    $('#erroGravacao').modal('show')
+    if (ano == "" || mes == '' || dia == '' || tipo == '' || descricao == '' || valor == '') {
+
+      return $("#modalRegistraDespesa").modal(
+        "Faltam campos para serem preenchidos"
+      );
+      
+    } 
+    else {
+      //dialog de sucesso
+      $("#modalRegistraDespesa").modal("show");
+    }
   }
 }
