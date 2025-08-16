@@ -60,20 +60,60 @@ function cadastrarDespesa() {
     valor.value
   );
 
-  if (despesa.validarDados()) {
-    bd.gravar(despesa);
+  // 1) Verifica campos vazios ANTES de qualquer outra coisa
+  const camposVazios = [ano, mes, dia, tipo, descricao, valor].some(
+    (v) => v == null || String(v).trim() === ""
+  );
 
-    //dialog de erro
-    if (ano == "" || mes == '' || dia == '' || tipo == '' || descricao == '' || valor == '') {
+  if (camposVazios) {
+    $("#modalTitulo").text("Erro no cadastro");
+    $("#modalCorpo").text("Faltam campos para serem preenchidos!");
 
-      return $("#modalRegistraDespesa").modal(
-        "Faltam campos para serem preenchidos"
-      );
-      
-    } 
-    else {
-      //dialog de sucesso
-      $("#modalRegistraDespesa").modal("show");
-    }
+    $("#modalRegistraDespesa .modal-header")
+      .removeClass("text-success text-danger")
+      .addClass("text-danger");
+
+    $("#modalBotao")
+      .removeClass("btn-success btn-danger")
+      .addClass("btn-danger")
+      .text("Corrigir");
+
+    $("#modalRegistraDespesa").modal("show");
+    return; // impede seguir adiante
   }
+
+  // 2) Regras adicionais de validação do objeto
+  if (!despesa.validarDados()) {
+    $("#modalTitulo").text("Dados inválidos");
+    $("#modalCorpo").text("Verifique os campos informados.");
+
+    $("#modalRegistraDespesa .modal-header")
+      .removeClass("text-success text-danger")
+      .addClass("text-danger");
+
+    $("#modalBotao")
+      .removeClass("btn-success btn-danger")
+      .addClass("btn-danger")
+      .text("Corrigir");
+
+    $("#modalRegistraDespesa").modal("show");
+    return;
+  }
+
+  // 3) Sucesso: grava e exibe modal verde
+  bd.gravar(despesa);
+
+  $("#modalTitulo").text("Registro inserido com sucesso");
+  $("#modalCorpo").text("Despesa foi cadastrada com sucesso!");
+
+  $("#modalRegistraDespesa .modal-header")
+    .removeClass("text-success text-danger")
+    .addClass("text-success");
+
+  $("#modalBotao")
+    .removeClass("btn-success btn-danger")
+    .addClass("btn-success")
+    .text("Ok");
+
+  $("#modalRegistraDespesa").modal("show");
 }
